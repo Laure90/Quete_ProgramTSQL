@@ -1,0 +1,129 @@
+create database multinational
+
+use multinational
+
+create table [function] (
+	function_id int primary key identity (1,1),
+	f_name varchar(20) not null,
+	base_salary decimal not null
+	);
+go
+
+create table addresse (
+	address_id int primary key identity (1,1),
+	street_number int not null,
+	street_name varchar(60) not null,
+	zipcode int not null,
+	);
+go
+
+create table succursale (
+	succursale_id int primary key identity (1,1),
+	FK_address_id int foreign key (FK_address_id) references addresse(address_id)
+	);
+go
+
+create table employee (
+	employee_id int primary key identity (1,1),
+	e_name varchar(20) not null,
+	age int not null,
+	years_worked int,
+	FK_superior_id int foreign key (FK_superior_id) references employee(employee_id),
+	FK_function_id int foreign key (FK_function_id) references [function](function_id),
+	FK_succursale_id int foreign key (FK_succursale_id) references succursale(succursale_id)
+	);
+go
+
+insert into [function] (f_name, base_salary) values ('developer', 1800), ('leadDeveloper', 2500), ('projectManager', 3000), ('commercial', 2800), ('director', 5000);
+
+insert into addresse(street_number, street_name, zipcode) values (12, 'rue du pamplemousse', 11111), (14, 'rue de la mandarine', 11111), (16, 'rue du pamplemousse', 11111),
+																 (1, 'rue des clémentines', 11111), (38, 'rue du pomelos', 11111)
+
+insert into succursale(FK_address_id) values (1), (2), (3), (4), (5)
+
+declare @countEmployee int = 0
+while @countEmployee <= 250
+begin 
+	set @countEmployee = @countEmployee +1
+	if @countEmployee <= 5
+		begin
+		insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+		values ('Mr Doe', 35, 10, null , 1, 1)
+		end
+	else if @countEmployee <= 50
+		begin
+		insert into employee (e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+		values ('John Smith', 40, 15, 5, 4, 2)
+		end
+	else if @countEmployee <= 100
+		begin
+		insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+		values ('Jane Smith', 33, 8, 4, 3, 3)
+		end
+	else if @countEmployee <= 150
+		begin
+		insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+		values ('Cookie Doe', 36, 13, 3, 2, 4)
+		end
+	else if @countEmployee <= 250
+		begin
+		insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+		values ('Smith Smith', 27, 5, 2, 1, 5)
+		end
+end
+
+create procedure jeuData
+	as
+	begin
+	insert into [function] (f_name, base_salary) values ('developer', 1800), ('leadDeveloper', 2500), ('projectManager', 3000), ('commercial', 2800), ('director', 5000);
+	insert into addresse(street_number, street_name, zipcode) values (12, 'rue du pamplemousse', 11111), (14, 'rue de la mandarine', 11111), (16, 'rue du pamplemousse', 11111), (1, 'rue des clémentines', 11111), (38, 'rue du pomelos', 11111)
+	insert into succursale(FK_address_id) values (1), (2), (3), (4), (5)
+	declare @countEmployee int = 0
+	while @countEmployee <= 250
+	begin 
+		set @countEmployee = @countEmployee +1
+		if @countEmployee <= 5
+			begin
+			insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+			values ('Mr Doe', 35, 10, null , 1, 1)
+			end
+		else if @countEmployee <= 50
+			begin
+			insert into employee (e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+			values ('John Smith', 40, 15, 5, 4, 2)
+			end
+		else if @countEmployee <= 100
+			begin
+			insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+			values ('Jane Smith', 33, 8, 4, 3, 3)
+			end
+		else if @countEmployee <= 150
+			begin
+			insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+			values ('Cookie Doe', 36, 13, 3, 2, 4)
+			end
+		else if @countEmployee <= 250
+			begin
+			insert into employee(e_name, age, years_worked, FK_superior_id, FK_function_id, FK_succursale_id) 
+			values ('Smith Smith', 27, 5, 2, 1, 5)
+			end
+	end
+	end
+return
+go
+
+create procedure sp_numberEmployeeByStreet
+	@streetNumber int,
+	@streetName varchar(60),
+	@numberEmployee int
+	as
+		select @numberEmployee  = COUNT(employee.employee_id) from employee
+								inner join succursale on succursale.succursale_id = employee.FK_succursale_id
+								inner join addresse on addresse.address_id = succursale.FK_address_id
+								group by succursale_id having addresse.street_number = @streetNumber and addresse.street_name = @streetName
+go
+
+declare @numberEmployeeByStreet int
+execute sp_numberEmployeeByStreet 38, 'rue du pomelos' @numberEmployeeByStreet output
+print @numberEmployeeByStreet
+go
