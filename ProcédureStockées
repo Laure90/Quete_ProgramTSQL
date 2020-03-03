@@ -1,0 +1,19 @@
+DROP PROCEDURE IF EXISTS sp_GetAdherentsCountForSectName
+GO
+
+CREATE PROCEDURE sp_GetAdherentsCountForSectName
+  @SectId int
+  AS
+  DECLARE @Name VARCHAR(60)
+    SELECT COUNT(Adherent.adherent_id)
+    FROM SectAdherent
+    INNER JOIN Sect ON Sect.sect_id = SectAdherent.FK_sect_id
+    INNER JOIN Adherent ON Adherent.adherent_id = SectAdherent.FK_adherent_id
+    GROUP BY Sect.sect_id
+	PRINT 
+RETURN
+GO
+
+EXECUTE sp_GetAdherentsCountForSectName 1
+PRINT sp_GetAdherentsCountForSectName
+GO
