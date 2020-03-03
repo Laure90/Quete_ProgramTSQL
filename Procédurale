@@ -1,74 +1,141 @@
 use PandemyAlert
 go
 
-declare @counter int =0
-while @counter <121
-begin
-	set @counter = @counter +1
-	if @counter<=10
+declare @countPerson int = 0
+while @countPerson <= 145
+begin 
+	set @countPerson = @countPerson +1
+	if @countPerson <= 10
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values ('John Doe', 1, 1)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Mr Doe', 1, 1)
 		end
-	else if @counter >10 and @counter<=20
+	else if @countPerson <= 20
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Jane Doe', 0, 2)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Cookie Doe', 0, 2)
 		end
-	else if @counter >20 and @counter<=30
+	else if @countPerson <= 30
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Bob Doe', 1, 3)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Jane Doe', 0, 3)
 		end
-	else if @counter >30 and @counter<=40
+	else if @countPerson <= 40
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Cherry Doe', 0, 4)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Cherry Doe', 1, 4)
 		end
-	else if @counter >40 and @counter<=50
+	else if @countPerson <= 50
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Cookie Doe', 1, 5)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Bruce Doe', 1, 5)
 		end
-	else if @counter >50 and @counter<=60
+	else if @countPerson <= 60
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Cow Doe', 0, 6)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Alfred Doe', 0, 6)
 		end
-	else if @counter >60 and @counter<=70
+	else if @countPerson <= 75
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Yang Doe', 1, 7)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Bruce Doe', 1, 5)
 		end
-	else if @counter >70 and @counter<=80
+	else if @countPerson <= 90
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Si Doe', 0, 8)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Jack Doe', 0, 8)
 		end
-	else if @counter >8 and @counter<=90
+	else if @countPerson <= 100
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Doe Doe', 1, 9)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Sarah Doe', 0, 9)
 		end
-	else if @counter >90 and @counter<=100
+	else if @countPerson <= 110
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Jane Doe', 0, 10)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Lala Doe', 1, 10)
 		end
-	else if @counter >100 and @counter<=110
+	else if @countPerson <= 125
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('John Doe', 1, 11)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Bob Doe', 1, 11)
 		end
-	else if @counter >110 and @counter<=120
+	else if @countPerson <= 145
 		begin
-		insert into Person([name], is_infected, FK_city_id)
-		values('Jane Doe', 0, 12)
+		insert into Person([name], is_infected, FK_city_id) 
+		values ('Jack Doe', 0, 12)
 		end
 end
 
-declare @worldmean decimal , @counterCase1 int, @CityCount int 
-select @worldmean = (select (COUNT([name])/12) from Person where is_infected = 1), @CityCount= (select COUNT(City.city_id) from City)
-while @
-if @counterCase1 = @worldmean
-	print @counterCase1
+declare @counter int, @personFranceInf int, @personAllemagne int, @personItalie int, @personUSA int, @personChine int, @personRussie int, @worldMean int
+set @counter = 0
+set @personFranceInf = (select count(Person.is_infected) from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'France'
+																							group by  Country.[name] )
+set @personAllemagne = (select count(Person.is_infected) from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Allemagne'
+																							group by  Country.[name] )
+set @personItalie = (select count(Person.is_infected) from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Italie'
+																							group by  Country.[name] )
+set @personUSA = (select count(Person.is_infected) from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Etats-Unis'
+																							group by  Country.[name] )
+set @personChine = (select count(Person.is_infected) from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Chine'
+																							group by  Country.[name] )
+set @personRussie = (select count(Person.is_infected) from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Russie'
+																							group by  Country.[name] )
+set @worldMean = (select (CAST(COUNT([name]) AS FLOAT)/12) from Person where is_infected = 1)
+begin
+	set @counter = @counter + 1
+	if @personFranceInf >= @worldMean
+		begin
+		select @personFranceInf, City.[name], Country.[name] from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'France'
+																							group by City.[name], Country.[name]
+		end
+	if @personAllemagne >= @worldMean
+		begin
+		select @personAllemagne, City.[name], Country.[name] from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Allemagne'
+																							group by City.[name], Country.[name] 
+		end
+	if @personItalie >= @worldMean
+		begin
+		select @personItalie, City.[name], Country.[name] from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Italie'
+																							group by City.[name], Country.[name] 
+		end
+	if @personChine >= @worldMean
+		begin
+		select @personChine, City.[name], Country.[name] from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Chine'
+																							group by City.[name], Country.[name]
+		end
+	if @personUSA >= @worldMean
+		begin
+		select @personUSA, City.[name], Country.[name] from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Etats-Unis'
+																							group by City.[name], Country.[name]
+		end
+	if @personRussie >= @worldMean
+		begin
+		select @personRussie, City.[name], Country.[name] from Person inner join City on City.city_id = Person.FK_city_id
+																							inner join Country on Country.country_id = City.FK_country_id
+																							where Person.is_infected = 1 and Country.[name] = 'Russie'
+																							group by City.[name], Country.[name] 
+		end
+end
