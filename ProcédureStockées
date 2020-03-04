@@ -58,3 +58,16 @@ GROUP BY Sect.[name]
 GO
 
 -- procédure qui retourne le nombre de sectes dans un argument de sortie
+
+DROP PROCEDURE IF EXISTS sp_NumberOfSect
+GO
+
+CREATE PROCEDURE sp_NumberOfSect
+	@NumberSect INT OUTPUT
+	AS
+	select @NumberSect = count(Sect.sect_id) from Sect
+GO
+
+declare @NumberOfSect int
+execute sp_NumberOfSect @NumberOfSect OUTPUT
+print @NumberOfSect
