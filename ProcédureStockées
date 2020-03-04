@@ -18,6 +18,11 @@ EXECUTE sp_GetAdherentsCountForSect
 GO
 
 -- procédure qui associe chacun des adhérents à chacune des sectes
+DROP PROCEDURE IF EXISTS sp_addAdherent
+GO
+
+CREATE PROCEDURE sp_addAdherent
+AS
 DECLARE @SectCursorId INT
 DECLARE Sect_Cursor CURSOR SCROLL FOR
 	SELECT sect_id FROM Sect
@@ -44,10 +49,8 @@ CLOSE Sect_Cursor
 CLOSE Adherent_Cursor
 DEALLOCATE Sect_Cursor
 DEALLOCATE Adherent_Cursor
-GO
 
-SELECT * FROM SectAdherent 
-GO
+EXECUTE sp_addAdherent
 
 SELECT Sect.[Name], COUNT(FK_Adherent_id) AS numberAdherent  FROM SectAdherent
 INNER JOIN Sect ON Sect.sect_id = SectAdherent.FK_sect_id
