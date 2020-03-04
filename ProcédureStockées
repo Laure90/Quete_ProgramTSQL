@@ -1,3 +1,5 @@
+-- procédure qui affiche le nombre d'adhérents par secte
+
 DROP PROCEDURE IF EXISTS sp_GetAdherentsCountForSect
 GO
 
@@ -14,3 +16,42 @@ GO
 
 EXECUTE sp_GetAdherentsCountForSect
 GO
+
+-- procédure qui associe chacun des adhérents à chacune des sectes
+DECLARE @SectCursorId INT
+DECLARE Sect_Cursor CURSOR SCROLL FOR
+	SELECT sect_id FROM Sect
+OPEN Sect_Cursor
+FETCH FIRST FROM Sect_Cursor INTO @SectCursorId
+
+DECLARE @AdherentCursorId INT
+	DECLARE Adherent_Cursor CURSOR SCROLL FOR 
+		SELECT adherent_id FROM Adherent
+	OPEN Adherent_Cursor
+WHILE @@FETCH_STATUS = 0
+BEGIN
+FETCH FIRST FROM Adherent_Cursor INTO @AdherentCursorId
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO SectAdherent(FK_sect_id, FK_adherent_id)
+		VALUES
+		(@SectCursorId, @AdherentCursorId)
+		FETCH NEXT FROM Adherent_Cursor INTO @AdherentCursorId
+	END
+	FETCH NEXT FROM Sect_Cursor INTO @SectCursorId
+END
+CLOSE Sect_Cursor
+CLOSE Adherent_Cursor
+DEALLOCATE Sect_Cursor
+DEALLOCATE Adherent_Cursor
+GO
+
+SELECT * FROM SectAdherent 
+GO
+
+SELECT Sect.[Name], COUNT(FK_Adherent_id) AS numberAdherent  FROM SectAdherent
+INNER JOIN Sect ON Sect.sect_id = SectAdherent.FK_sect_id
+GROUP BY Sect.[name]
+GO
+
+-- procédure qui retourne le nombre de sectes dans un argument de sortie
