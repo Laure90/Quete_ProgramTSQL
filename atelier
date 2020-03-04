@@ -132,3 +132,28 @@ declare @numberEmployeeByStreet int
 execute sp_numberEmployeeByStreet 12, 'rue du pamplemousse', @numberEmployeeByStreet output
 print @numberEmployeeByStreet
 go
+
+select COUNT(employee.FK_function_id) as total, [function].f_name, succursale.succursale_id from succursale inner join employee on succursale.succursale_id = employee.FK_succursale_id
+													inner join [function] on [function].function_id = employee.FK_function_id
+													group by [function].f_name , succursale.succursale_id having [function].f_name = 'developer'
+go
+
+drop procedure if exists sp_totalEmployeeBySuccursal
+go
+
+create procedure sp_totalEmployeeBySuccursal
+	@job varchar(60) 
+	as
+	declare @numberEmployeeDoJobBySuccursale int
+	select @numberEmployeeDoJobBySuccursale  = COUNT(employee.FK_function_id) 
+													from succursale 
+													inner join employee on succursale.succursale_id = employee.FK_succursale_id
+													inner join [function] on [function].function_id = employee.FK_function_id
+													group by [function].f_name, succursale.succursale_id having [function].f_name = @job
+	return @numberEmployeeDoJobBySuccursale
+go
+
+declare @totalEmployeeBySuccursal int
+execute @totalEmployeeBySuccursal = sp_totalEmployeeBySuccursal 'developer'
+print @totalEmployeeBySuccursal
+go
