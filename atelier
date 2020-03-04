@@ -112,18 +112,23 @@ create procedure jeuData
 return
 go
 
+-- procédure ayant pour arguments le numéro de la rue et le nom de la rue. Cette procédure peut renvoyer le compte d’employés à une adresse dans une variable.
+
+drop procedure if exists sp_numberEmployeeByStreet
+go
+
 create procedure sp_numberEmployeeByStreet
 	@streetNumber int,
 	@streetName varchar(60),
-	@numberEmployee int
+	@numberEmployee int output
 	as
-		select @numberEmployee  = COUNT(employee.employee_id) from employee
+	select @numberEmployee  = COUNT(employee.employee_id) from employee
 								inner join succursale on succursale.succursale_id = employee.FK_succursale_id
 								inner join addresse on addresse.address_id = succursale.FK_address_id
-								group by succursale_id having addresse.street_number = @streetNumber and addresse.street_name = @streetName
+								group by addresse.street_number, addresse.street_name having addresse.street_number = @streetNumber and addresse.street_name = @streetName
 go
 
 declare @numberEmployeeByStreet int
-execute sp_numberEmployeeByStreet 38, 'rue du pomelos' @numberEmployeeByStreet output
+execute sp_numberEmployeeByStreet 12, 'rue du pamplemousse', @numberEmployeeByStreet output
 print @numberEmployeeByStreet
 go
